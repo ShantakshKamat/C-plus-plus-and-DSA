@@ -14,6 +14,17 @@ public:
         this->next = NULL;
         this->prev = NULL;
     };
+
+    ~Node()
+    {
+        int val = this->data;
+        if (next != NULL)
+        {
+            delete next;
+            next = NULL;
+        }
+        cout << "Memory free for node with data " << val << endl;
+    }
 };
 
 // insert at head
@@ -71,7 +82,7 @@ void insertAtPosition(Node *&head, Node *&tail, int position, int data)
     // when inserting at last position
     if (temp->next == NULL)
     {
-        insertAtTail(tail, head, data);
+        insertAtTail(head, tail, data);
         return;
     }
 
@@ -81,6 +92,36 @@ void insertAtPosition(Node *&head, Node *&tail, int position, int data)
     temp->next = nodetoInsert;
     nodetoInsert->prev = temp;
 }
+void deletion(Node *&head, int position)
+{
+    if (position == 1)
+    {
+        // deleting first or start node
+        Node *temp = head;
+        temp->next->prev = NULL;
+        head = temp->next;
+        temp->next = NULL;
+        delete temp; // free the temp node;
+    }
+    else
+    {
+        // deleting any middle node or last node
+        Node *curr = head;
+        Node *prev = NULL;
+
+        int cnt = 1;
+        while (cnt < position)
+        {
+            prev = curr;
+            curr = curr->next;
+            cnt++;
+        }
+        curr->prev = NULL;
+        prev->next = curr->next;
+        curr->next = NULL;
+        delete curr;
+    }
+}
 
 // traversing a linked list
 void print(Node *head)
@@ -88,7 +129,7 @@ void print(Node *head)
     Node *temp = head;
     while (temp != NULL)
     {
-        cout << temp->data << "-> ";
+        cout << temp->data << "->";
         temp = temp->next;
     }
     cout << endl;
@@ -121,13 +162,15 @@ int main()
     // print(head);
 
     // at tail insertion
-    insertAtTail(tail, head, 1);
+    insertAtTail(head, tail, 1);
     print(head);
-    insertAtTail(tail, head, 2);
+    insertAtTail(head, tail, 2);
     print(head);
 
     insertAtPosition(head, tail, 2, 23);
     print(head);
 
+    deletion(head, 4);
+    print(head);
     return 0;
 }
